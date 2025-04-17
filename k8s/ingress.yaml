@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: nginx-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: booklibrary.local
+      http:
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: booklibrary-api
+                port:
+                  number: 5000
+
+          # Swagger UI
+          - path: /swagger(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: booklibrary-api
+                port:
+                  number: 5000
+
+          # Frontend (React)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: booklibrary-web
+                port:
+                  number: 80

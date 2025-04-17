@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booklibrary-api
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: booklibrary-api
+  template:
+    metadata:
+      labels:
+        app: booklibrary-api
+    spec:
+      containers:
+      - name: booklibrary-api
+        image: testlibrary.azurecr.io/booklibrary-api:latest
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always
+        env:
+        - name: ConnectionStrings__DefaultConnection
+          value: "Server=mssql;Database=LibraryDb;User Id=sa;Password=Passw0rd;Encrypt=False;TrustServerCertificate=True;"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booklibrary-api
+spec:
+  selector:
+    app: booklibrary-api
+  ports:
+  - port: 80
+  type: LoadBalancer
