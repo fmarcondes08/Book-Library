@@ -97,9 +97,9 @@ kubectl apply -f k8s/ingress.yaml
 ### ✅ 5. Test it out
 
 Visit:
-- http://<external-ip>/swagger/index.html
-- http://<external-ip>/api/<routes>
-- http://<external-ip>/
+- http://{external-ip}/swagger/index.html
+- http://{external-ip}/api/<routes>
+- http://{external-ip}/
 
 ---
 
