@@ -27,6 +27,8 @@ spec:
         env:
         - name: ConnectionStrings__DefaultConnection
           value: "Server=mssql;Database=LibraryDb;User Id=sa;Password=Passw0rd;Encrypt=False;TrustServerCertificate=True;"
+      imagePullSecrets:
+        - name: acr-secret
 ---
 apiVersion: v1
 kind: Service
