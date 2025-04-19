@@ -15,10 +15,10 @@ import Footer from './components/common/Footer';
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-gray-100">
+      <div>
         <Header />
         
-        <main className="flex-grow py-8">
+        <main>
           <Routes>
             <Route path="/" element={<BookSearchPage />} />
             <Route path="/books/create" element={<BookCreatePage />} />
@@ -28,7 +28,7 @@ const App: React.FC = () => {
         
         <Footer />
         
-        <ToastContainer position="bottom-right" />
+        <ToastContainer />
       </div>
     </Router>
   );

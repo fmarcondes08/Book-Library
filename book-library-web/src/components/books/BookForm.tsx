@@ -10,7 +10,6 @@ interface BookFormProps {
   isEditing: boolean;
 }
 
-// Validation schema
 const BookSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
   firstName: Yup.string().required('Author first name is required'),
@@ -24,24 +23,30 @@ const BookSchema = Yup.object().shape({
     .test(
       'less-than-total',
       'Copies in use cannot exceed total copies',
-      function(value) {
+      function (value) {
         return value <= this.parent.totalCopies;
       }
     ),
   type: Yup.string().required('Type is required'),
   isbn: Yup.string().required('ISBN is required'),
-  category: Yup.string().required('Category is required')
+  category: Yup.string().required('Category is required'),
 });
 
 const BookForm: React.FC<BookFormProps> = ({ initialValues, onSubmit, isEditing }) => {
   const navigate = useNavigate();
 
   return (
-    <div>
-      <h2>
-        {isEditing ? 'Edit Book' : 'Add New Book'}
-      </h2>
-      
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        padding: '2rem',
+      }}
+    >
+      <h2>{isEditing ? 'Edit Book' : 'Add New Book'}</h2>
+
       <Formik
         initialValues={initialValues}
         validationSchema={BookSchema}
@@ -58,123 +63,81 @@ const BookForm: React.FC<BookFormProps> = ({ initialValues, onSubmit, isEditing 
         }}
       >
         {({ isSubmitting, status }) => (
-          <Form>
+          <Form
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              maxWidth: '600px',
+              width: '100%',
+            }}
+          >
             {status && (
-              <div>
+              <div style={{ color: 'red' }}>
                 {status instanceof Error ? status.message : String(status)}
               </div>
             )}
-            
-            <div>
-              <div>
-                <label htmlFor="title">Title</label>
-                <Field
-                  type="text"
-                  id="title"
+
+            {[
+              { label: 'Title', name: 'title', type: 'text' },
+              { label: 'ISBN', name: 'isbn', type: 'text' },
+              { label: 'Author First Name', name: 'firstName', type: 'text' },
+              { label: 'Author Last Name', name: 'lastName', type: 'text' },
+              { label: 'Total Copies', name: 'totalCopies', type: 'number', min: 1 },
+              { label: 'Copies In Use', name: 'copiesInUse', type: 'number', min: 0 },
+            ].map(({ label, name, type, min }) => (
+              <div key={name} style={{ display: 'flex', flexDirection: 'column' }}>
+                <label htmlFor={name}>{label}</label>
+                <Field type={type} id={name} name={name} min={min} />
+                <ErrorMessage
                   name="title"
+                  render={msg => <div style={{ color: 'red' }}>{msg}</div>}
                 />
-                <ErrorMessage name="title" component="div" />
               </div>
-              
-              <div>
-                <label htmlFor="isbn">ISBN</label>
-                <Field
-                  type="text"
-                  id="isbn"
-                  name="isbn"
-                />
-                <ErrorMessage name="isbn" component="div" />
-              </div>
-              
-              <div>
-                <label htmlFor="firstName">Author First Name</label>
-                <Field
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                />
-                <ErrorMessage name="firstName" component="div" />
-              </div>
-              
-              <div>
-                <label htmlFor="lastName">Author Last Name</label>
-                <Field
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                />
-                <ErrorMessage name="lastName" component="div" />
-              </div>
-              
-              <div>
-                <label htmlFor="category">Category</label>
-                <Field
-                  as="select"
-                  id="category"
-                  name="category"
-                >
-                  <option value="">Select a category</option>
-                  <option value="Fiction">Fiction</option>
-                  <option value="Non-Fiction">Non-Fiction</option>
-                  <option value="Biography">Biography</option>
-                  <option value="Mystery">Mystery</option>
-                  <option value="Sci-Fi">Sci-Fi</option>
-                  <option value="History">History</option>
+            ))}
+
+            {[
+              {
+                label: 'Category',
+                name: 'category',
+                options: [
+                  '',
+                  'Fiction',
+                  'Non-Fiction',
+                  'Biography',
+                  'Mystery',
+                  'Sci-Fi',
+                  'History',
+                ],
+              },
+              {
+                label: 'Type',
+                name: 'type',
+                options: ['', 'Hardcover', 'Paperback', 'E-Book', 'Audiobook'],
+              },
+            ].map(({ label, name, options }) => (
+              <div key={name} style={{ display: 'flex', flexDirection: 'column' }}>
+                <label htmlFor={name}>{label}</label>
+                <Field as="select" id={name} name={name}>
+                  {options.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt || `Select a ${label.toLowerCase()}`}
+                    </option>
+                  ))}
                 </Field>
-                <ErrorMessage name="category" component="div" />
-              </div>
-              
-              <div>
-                <label htmlFor="type">Type</label>
-                <Field
-                  as="select"
-                  id="type"
-                  name="type"
-                >
-                  <option value="">Select a type</option>
-                  <option value="Hardcover">Hardcover</option>
-                  <option value="Paperback">Paperback</option>
-                  <option value="E-Book">E-Book</option>
-                  <option value="Audiobook">Audiobook</option>
-                </Field>
-                <ErrorMessage name="type" component="div" />
-              </div>
-              
-              <div>
-                <label htmlFor="totalCopies">Total Copies</label>
-                <Field
-                  type="number"
-                  id="totalCopies"
-                  name="totalCopies"
-                  min="1"
+                <ErrorMessage
+                  name="title"
+                  render={msg => <div style={{ color: 'red' }}>{msg}</div>}
                 />
-                <ErrorMessage name="totalCopies" component="div" />
               </div>
-              
-              <div>
-                <label htmlFor="copiesInUse">Copies In Use</label>
-                <Field
-                  type="number"
-                  id="copiesInUse"
-                  name="copiesInUse"
-                  min="0"
-                />
-                <ErrorMessage name="copiesInUse" component="div" />
-              </div>
-            </div>
-            
-            <div>
-              <button
-                type="button"
-                onClick={() => navigate('/')}
-              >
+            ))}
+
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+              <button type="button" onClick={() => navigate('/')}>
                 Cancel
               </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Saving...' : (isEditing ? 'Update Book' : 'Add Book')}
+              <button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Saving...' : isEditing ? 'Update Book' : 'Add Book'}
               </button>
             </div>
           </Form>

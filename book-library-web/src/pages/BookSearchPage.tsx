@@ -16,16 +16,14 @@ const BookSearchPage: React.FC = () => {
   const pageSize = 10;
 
   const fetchBooks = async () => {
-    if (!searchBy || !searchValue) {
-      return;
-    }
+    if (!searchBy || !searchValue) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
       const response = await bookService.searchBooks(searchBy, searchValue, currentPage, pageSize);
-      
+
       if (response.success && response.books) {
         const { books, totalCount } = response;
         setBooks(books as Book[]);
@@ -57,63 +55,64 @@ const BookSearchPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '2rem',
+      gap: '1.5rem',
+    }}>
+      <div style={{ textAlign: 'center' }}>
         <h1>Royal Library</h1>
-        <Link 
-          to="/books/create" 
-        >
-          Add New Book
-        </Link>
+        <Link to="/books/create">Add New Book</Link>
       </div>
 
       {/* Search Form */}
-      <div>
-        <form onSubmit={handleSearch}>
-          <div>
-            <label htmlFor="searchBy">Search By:</label>
-            <select
-              id="searchBy"
-              value={searchBy}
-              onChange={(e) => setSearchBy(e.target.value)}
-              required
-            >
-              <option value="title">Title</option>
-              <option value="author">Author</option>
-              <option value="isbn">ISBN</option>
-              <option value="category">Category</option>
-            </select>
-          </div>
-          
-          <div>
-            <label htmlFor="searchValue">Search Value:</label>
-            <input
-              type="text"
-              id="searchValue"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              required
-              placeholder="Enter search term..."
-            />
-          </div>
-          
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Searching...' : 'Search'}
-            </button>
-          </div>
-        </form>
-      </div>
+      <form onSubmit={handleSearch} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '1rem',
+        width: '100%',
+        maxWidth: '400px'
+      }}>
+        <div>
+          <label htmlFor="searchBy">Search By:</label>
+          <select
+            id="searchBy"
+            value={searchBy}
+            onChange={(e) => setSearchBy(e.target.value)}
+            required
+          >
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+            <option value="isbn">ISBN</option>
+            <option value="category">Category</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="searchValue">Search Value:</label>
+          <input
+            type="text"
+            id="searchValue"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            required
+            placeholder="Enter search term..."
+          />
+        </div>
+
+        <div>
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? 'Searching...' : 'Search'}
+          </button>
+        </div>
+      </form>
 
       {/* Error Display */}
-      {error && (
-        <div>
-          {error}
-        </div>
-      )}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
 
       {/* Results */}
       {isLoading ? (
@@ -121,19 +120,28 @@ const BookSearchPage: React.FC = () => {
       ) : (
         <>
           {books.length > 0 ? (
-            <div>
-              <h2>Search Results:</h2>
-              <BookList 
-                books={books} 
-                totalCount={totalCount} 
-                currentPage={currentPage} 
-                pageSize={pageSize} 
-                onPageChange={handlePageChange}
-                onDeleteSuccess={fetchBooks}
-              />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+                marginTop: '2rem',
+              }}
+            >
+              <div style={{ width: '100%', maxWidth: '800px', textAlign: 'center' }}>
+                <h2>Search Results:</h2>
+                <BookList 
+                  books={books} 
+                  totalCount={totalCount} 
+                  currentPage={currentPage} 
+                  pageSize={pageSize} 
+                  onPageChange={handlePageChange}
+                  onDeleteSuccess={fetchBooks}
+                />
+              </div>
             </div>
           ) : (
-            <div>
+            <div style={{ textAlign: 'center', marginTop: '2rem' }}>
               <h2>No results.</h2>
             </div>
           )}

@@ -33,7 +33,6 @@ const BookCreatePage: React.FC = () => {
 
   return (
     <div>
-      <h1>Add New Book</h1>
       <BookForm 
         initialValues={initialValues} 
         onSubmit={handleSubmit} 

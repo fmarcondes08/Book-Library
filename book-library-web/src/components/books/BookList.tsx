@@ -13,16 +13,15 @@ interface BookListProps {
   onDeleteSuccess: () => void;
 }
 
-const BookList: React.FC<BookListProps> = ({ 
-  books, 
-  totalCount, 
-  currentPage, 
-  pageSize, 
+const BookList: React.FC<BookListProps> = ({
+  books,
+  totalCount,
+  currentPage,
+  pageSize,
   onPageChange,
-  onDeleteSuccess
+  onDeleteSuccess,
 }) => {
   const [deletingId, setDeletingId] = useState<number | null>(null);
-
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const handleDelete = async (id: number) => {
@@ -43,40 +42,49 @@ const BookList: React.FC<BookListProps> = ({
   };
 
   if (books.length === 0) {
-    return <div>No books found.</div>;
+    return <div style={{ textAlign: 'center' }}>No books found.</div>;
   }
 
   return (
-    <div>
-      <div>
-        <table>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ overflowX: 'auto', marginBottom: '1rem' }}>
+        <table
+          style={{
+            borderCollapse: 'collapse',
+            width: '100%',
+            maxWidth: '1000px',
+            border: '1px solid #ccc',
+          }}
+        >
           <thead>
             <tr>
-              <th>Book Title</th>
-              <th>Author</th>
-              <th>Type</th>
-              <th>ISBN</th>
-              <th>Category</th>
-              <th>Available</th>
-              <th>Actions</th>
+              {['Book Title', 'Author', 'Type', 'ISBN', 'Category', 'Available', 'Actions'].map((header) => (
+                <th
+                  key={header}
+                  style={{
+                    border: '1px solid #ccc',
+                    padding: '0.75rem',
+                    backgroundColor: '#f3f4f6',
+                    textAlign: 'left',
+                  }}
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {books.map((book) => (
               <tr key={book.bookId}>
-                <td>{book.title}</td>
-                <td>{`${book.firstName} ${book.lastName}`}</td>
-                <td>{book.type}</td>
-                <td>{book.isbn}</td>
-                <td>{book.category}</td>
-                <td>{`${book.totalCopies - book.copiesInUse}/${book.totalCopies}`}</td>
-                <td>
-                  <div>
-                    <Link 
-                      to={`/books/edit/${book.bookId}`}
-                    >
-                      Edit
-                    </Link>
+                <td style={cellStyle}>{book.title}</td>
+                <td style={cellStyle}>{`${book.firstName} ${book.lastName}`}</td>
+                <td style={cellStyle}>{book.type}</td>
+                <td style={cellStyle}>{book.isbn}</td>
+                <td style={cellStyle}>{book.category}</td>
+                <td style={cellStyle}>{`${book.totalCopies - book.copiesInUse}/${book.totalCopies}`}</td>
+                <td style={cellStyle}>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <Link to={`/books/edit/${book.bookId}`}>Edit</Link>
                     <button
                       onClick={() => book.bookId && handleDelete(book.bookId)}
                       disabled={deletingId === book.bookId}
@@ -93,33 +101,29 @@ const BookList: React.FC<BookListProps> = ({
 
       {/* Pagination controls */}
       {totalPages > 1 && (
-        <div>
-          <button
-            onClick={() => onPageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>
             Previous
           </button>
-          
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-            <button
-              key={page}
-              onClick={() => onPageChange(page)}
-            >
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button key={page} onClick={() => onPageChange(page)}>
               {page}
             </button>
           ))}
-          
-          <button
-            onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
+
+          <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
             Next
           </button>
         </div>
       )}
     </div>
   );
+};
+
+const cellStyle: React.CSSProperties = {
+  border: '1px solid #ccc',
+  padding: '0.75rem',
 };
 
 export default BookList;
