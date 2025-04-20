@@ -48,9 +48,6 @@ spec:
       containers:
       - name: mssql
         image: mcr.microsoft.com/mssql/server:2022-latest
-        command: ["sleep"]
-        args:
-        - "3600000"
         ports:
         - containerPort: 1433
         env:
